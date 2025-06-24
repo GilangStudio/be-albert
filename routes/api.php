@@ -35,7 +35,9 @@ Route::group(['prefix' => 'website'], function () {
 
     Route::get('/home/get', [ApiController::class, 'get_home']);
     Route::get('/about/get', [ApiController::class, 'get_about']);
+    Route::get('/about-company/get', [ApiController::class, 'get_about_company']);
     Route::get('/press/get', [ApiController::class, 'get_press']);
+    Route::get('/achievement/get', [ApiController::class, 'get_achievement']);
     Route::get('/contact/get', [ApiController::class, 'get_contact']);
     Route::get('/collection/get', [ApiController::class, 'get_collection']);
     Route::get('/collection/bridal/get', [ApiController::class, 'get_collection_bridal']);

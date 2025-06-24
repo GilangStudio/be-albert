@@ -29,6 +29,12 @@
                         <a class="nav-link {{ Route::is('press.*') ? 'active' : '' }}" href="{{ route('press.index') }}"><i class="ti ti-news menu-icon"></i><span>Press</span></a>
                     </li><!--end nav-item-->
                     <li class="nav-item">
+                        <a class="nav-link {{ Route::is('achievement.*') ? 'active' : '' }}" href="{{ route('achievement.index') }}"><i class="ti ti-trophy menu-icon"></i><span>Achievement</span></a>
+                    </li><!--end nav-item-->
+                    <li class="nav-item">
+                        <a class="nav-link {{ Route::is('about-company.*') ? 'active' : '' }}" href="{{ route('about-company.index') }}"><i class="ti ti-building menu-icon"></i><span>About Company</span></a>
+                    </li><!--end nav-item-->
+                    <li class="nav-item">
                         <a class="nav-link {{ Route::is('about.*') ? 'active' : '' }}" href="{{ route('about.index') }}"><i class="ti ti-user menu-icon"></i><span>About</span></a>
                     </li><!--end nav-item-->
                     <li class="nav-item">

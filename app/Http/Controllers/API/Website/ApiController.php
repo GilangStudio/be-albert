@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\API\Website;
 
-use App\Models\Banner;
-use App\Models\Collection;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\About;
-use App\Models\Contact;
 use App\Models\Press;
+use App\Models\Banner;
+use App\Models\Contact;
+use App\Models\Collection;
+use App\Models\Achievement;
+use App\Models\AboutCompany;
+use Illuminate\Http\Request;
 use App\Models\WebsiteSettings;
+use App\Http\Controllers\Controller;
 
 class ApiController extends Controller
 {
@@ -25,8 +27,9 @@ class ApiController extends Controller
 
     public function get_home() {
         $banners = Banner::select('id', 'image', 'display_order')->orderBy('display_order', 'asc')->get();
-        $collections = Collection::select('id', 'name', 'slug', 'type', 'collection_year', 'main_image')->where('is_active', 1)->orderBy('collection_year', 'desc')->limit(3)->get();
+        $collections = Collection::select('id', 'name', 'slug', 'type', 'collection_year', 'main_image')->where('is_active', 1)->where('type', 'regular')->orderBy('collection_year', 'desc')->limit(3)->get();
         $presses = Press::select('id', 'title', 'published_on', 'published_date', 'link', 'image')->orderBy('published_date', 'desc')->limit(3)->get();
+        $achievements = Achievement::select('id', 'name', 'image', 'display_order')->orderBy('display_order', 'asc')->limit(4)->get();
 
         foreach ($banners as $banner) {
             $banner->image = asset('storage/website/banners/' . $banner->image);
@@ -40,12 +43,17 @@ class ApiController extends Controller
             $press->image = asset('storage/website/presses/' . $press->image);
         }
 
+        foreach ($achievements as $achievement) {
+            $achievement->image = asset('storage/website/achievements/'. $achievement->image);
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => [
                 'banners' => $banners,
                 'collections' => $collections,
-                'presses' => $presses
+                'presses' => $presses,
+                'achievements' => $achievements
             ]
         ]);
     }
@@ -66,6 +74,25 @@ class ApiController extends Controller
         ]);
     }
 
+    public function get_about_company() {
+        $aboutCompany = AboutCompany::select('id', 'banner_image', 'main_description', 'section_image', 'section_description')->first();
+
+        if ($aboutCompany) {
+            if ($aboutCompany->banner_image) {
+                $aboutCompany->banner_image = asset('storage/website/about-company/' . $aboutCompany->banner_image);
+            }
+            
+            if ($aboutCompany->section_image) {
+                $aboutCompany->section_image = asset('storage/website/about-company/' . $aboutCompany->section_image);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $aboutCompany
+        ]);
+    }
+
     public function get_press() {
         $presses = Press::select('id', 'title', 'published_on', 'published_date', 'link', 'image')->orderBy('published_date', 'desc')->get();
 
@@ -78,6 +105,19 @@ class ApiController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $presses
+        ]);
+    }
+
+    public function get_achievement() {
+        $achievements = Achievement::select('id', 'name', 'image', 'display_order')->orderBy('display_order', 'asc')->get();
+
+        foreach ($achievements as $achievement) {
+            $achievement->image = asset('storage/website/achievements/' . $achievement->image);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $achievements
         ]);
     }
 

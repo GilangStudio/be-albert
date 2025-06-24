@@ -14,7 +14,9 @@ use App\Http\Controllers\Shop\ProductSizeController;
 use App\Http\Controllers\Shop\MainCategoryController;
 use App\Http\Controllers\Shop\ProductImageController;
 use App\Http\Controllers\Website\CollectionController;
+use App\Http\Controllers\Website\AchievementController;
 use App\Http\Controllers\Shop\ProductCategoryController;
+use App\Http\Controllers\Website\AboutCompanyController;
 use App\Http\Controllers\Shop\FashionWeekBannerController;
 use App\Http\Controllers\Website\WebsiteSettingsController;
 use App\Http\Controllers\Website\CollectionGenderController;
@@ -47,6 +49,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/collection/{collection}/image/{id}/delete', [CollectionGenderController::class, 'destroy'])->name('collection.image.delete');
         Route::resource('/press', PressController::class);
         Route::resource('/about', AboutController::class);
+
+        Route::resource('/achievement', AchievementController::class);
+        Route::post('/achievement/sort', [AchievementController::class, 'sort'])->name('achievement.sort');
+
+        Route::get('/about-company', [AboutCompanyController::class, 'index'])->name('about-company.index');
+        Route::post('/about-company', [AboutCompanyController::class, 'update'])->name('about-company.update');
 
         Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
         Route::post('/contact', [ContactController::class, 'update'])->name('contact.update');
