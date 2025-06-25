@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contacts', function (Blueprint $table) {
+        Schema::create('collection_banners', function (Blueprint $table) {
             $table->id();
-            $table->string('banner_image');
-            $table->string('section_image');
-            $table->text('description')->nullable();
-            $table->text('address')->nullable();
-            $table->string('phone_number')->nullable();
-            $table->string('email')->nullable();
+            $table->enum('type', ['collection', 'bridal']); // Tipe banner (Collection atau Bridal)
+            $table->text('description')->nullable(); // Deskripsi untuk semua banner
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contacts');
+        Schema::dropIfExists('collection_banners');
     }
 };

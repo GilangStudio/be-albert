@@ -11,6 +11,7 @@ use App\Models\Achievement;
 use App\Models\AboutCompany;
 use Illuminate\Http\Request;
 use App\Models\WebsiteSettings;
+use App\Models\CollectionBanner;
 use App\Http\Controllers\Controller;
 
 class ApiController extends Controller
@@ -122,9 +123,13 @@ class ApiController extends Controller
     }
 
     public function get_contact() {
-        $contact = Contact::select('banner_image', 'description', 'address', 'phone_number', 'email')->firstOrFail();
+        $contact = Contact::select('banner_image', 'section_image', 'description', 'address', 'phone_number', 'email')->firstOrFail();
 
-        $contact->banner_image = asset('storage/website/contact/' . $contact->banner_image);        
+        $contact->banner_image = asset('storage/website/contact/' . $contact->banner_image);  
+        
+        if ($contact->section_image) {
+            $contact->section_image = asset('storage/website/contact/' . $contact->section_image);
+        }
 
         return response()->json([
             'status' => 'success',
@@ -150,9 +155,32 @@ class ApiController extends Controller
             $collection->main_image = asset('storage/website/collections/' . $collection->main_image);
         }
 
+        // Get collection banner
+        $collectionBanner = CollectionBanner::collection()->with('images')->first();
+        $bannerData = null;
+
+        if ($collectionBanner) {
+            $bannerData = [
+                'id' => $collectionBanner->id,
+                'description' => $collectionBanner->description,
+                'images' => []
+            ];
+
+            foreach ($collectionBanner->images as $image) {
+                $bannerData['images'][] = [
+                    'id' => $image->id,
+                    'image' => asset('storage/website/collection-banners/' . $image->image),
+                    'display_order' => $image->display_order
+                ];
+            }
+        }
+
         return response()->json([
             'status' => 'success',
-            'data' => $collections
+            'data' => [
+                'collections' => $collections,
+                'banner' => $bannerData
+            ]
         ]);
     }
 
@@ -163,9 +191,32 @@ class ApiController extends Controller
             $collection->main_image = asset('storage/website/collections/' . $collection->main_image);
         }
 
+        // Get bridal banner
+        $bridalBanner = CollectionBanner::bridal()->with('images')->first();
+        $bannerData = null;
+
+        if ($bridalBanner) {
+            $bannerData = [
+                'id' => $bridalBanner->id,
+                'description' => $bridalBanner->description,
+                'images' => []
+            ];
+
+            foreach ($bridalBanner->images as $image) {
+                $bannerData['images'][] = [
+                    'id' => $image->id,
+                    'image' => asset('storage/website/collection-banners/' . $image->image),
+                    'display_order' => $image->display_order
+                ];
+            }
+        }
+
         return response()->json([
             'status' => 'success',
-            'data' => $collections
+            'data' => [
+                'collections' => $collections,
+                'banner' => $bannerData
+            ]
         ]);
     }
 
@@ -184,6 +235,68 @@ class ApiController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $collection
+        ]);
+    }
+
+    // Method baru untuk Collection Banner
+    public function get_collection_banner() {
+        $banner = CollectionBanner::collection()->with('images')->first();
+
+        if (!$banner) {
+            return response()->json([
+                'status' => 'success',
+                'data' => null
+            ]);
+        }
+
+        $data = [
+            'id' => $banner->id,
+            'description' => $banner->description,
+            'images' => []
+        ];
+
+        foreach ($banner->images as $image) {
+            $data['images'][] = [
+                'id' => $image->id,
+                'image' => asset('storage/website/collection-banners/' . $image->image),
+                'display_order' => $image->display_order
+            ];
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
+
+    // Method baru untuk Bridal Banner
+    public function get_bridal_banner() {
+        $banner = CollectionBanner::bridal()->with('images')->first();
+
+        if (!$banner) {
+            return response()->json([
+                'status' => 'success',
+                'data' => null
+            ]);
+        }
+
+        $data = [
+            'id' => $banner->id,
+            'description' => $banner->description,
+            'images' => []
+        ];
+
+        foreach ($banner->images as $image) {
+            $data['images'][] = [
+                'id' => $image->id,
+                'image' => asset('storage/website/collection-banners/' . $image->image),
+                'display_order' => $image->display_order
+            ];
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
         ]);
     }
 }

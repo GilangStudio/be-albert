@@ -19,6 +19,7 @@ use App\Http\Controllers\Shop\ProductCategoryController;
 use App\Http\Controllers\Website\AboutCompanyController;
 use App\Http\Controllers\Shop\FashionWeekBannerController;
 use App\Http\Controllers\Website\WebsiteSettingsController;
+use App\Http\Controllers\Website\CollectionBannerController;
 use App\Http\Controllers\Website\CollectionGenderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
@@ -47,6 +48,22 @@ Route::middleware('auth')->group(function () {
         Route::resource('/collection', CollectionController::class);
         Route::post('/collection/{collection}/images', [CollectionGenderController::class, 'update'])->name('collection.images');
         Route::delete('/collection/{collection}/image/{id}/delete', [CollectionGenderController::class, 'destroy'])->name('collection.image.delete');
+
+        // Collection Banner Routes - Tambahkan ini
+        Route::group(['prefix' => 'collection-banner'], function () {
+            // Collection Banner
+            Route::get('/collection', [CollectionBannerController::class, 'collectionIndex'])->name('collection-banner.collection.index');
+            Route::post('/collection', [CollectionBannerController::class, 'collectionUpdate'])->name('collection-banner.collection.update');
+            Route::delete('/collection/image/{id}', [CollectionBannerController::class, 'collectionImageDestroy'])->name('collection-banner.collection.image.destroy');
+            Route::post('/collection/sort', [CollectionBannerController::class, 'collectionSort'])->name('collection-banner.collection.sort');
+            
+            // Bridal Banner
+            Route::get('/bridal', [CollectionBannerController::class, 'bridalIndex'])->name('collection-banner.bridal.index');
+            Route::post('/bridal', [CollectionBannerController::class, 'bridalUpdate'])->name('collection-banner.bridal.update');
+            Route::delete('/bridal/image/{id}', [CollectionBannerController::class, 'bridalImageDestroy'])->name('collection-banner.bridal.image.destroy');
+            Route::post('/bridal/sort', [CollectionBannerController::class, 'bridalSort'])->name('collection-banner.bridal.sort');
+        });
+        
         Route::resource('/press', PressController::class);
         Route::resource('/about', AboutController::class);
 

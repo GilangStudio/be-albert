@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contacts', function (Blueprint $table) {
+        Schema::create('collection_banner_images', function (Blueprint $table) {
             $table->id();
-            $table->string('banner_image');
-            $table->string('section_image');
-            $table->text('description')->nullable();
-            $table->text('address')->nullable();
-            $table->string('phone_number')->nullable();
-            $table->string('email')->nullable();
+            $table->foreignId('collection_banner_id')->constrained('collection_banners')->onDelete('cascade');
+            $table->string('image'); // Path gambar banner
+            $table->integer('display_order')->nullable(); // Urutan tampilan gambar
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contacts');
+        Schema::dropIfExists('collection_banner_images');
     }
 };

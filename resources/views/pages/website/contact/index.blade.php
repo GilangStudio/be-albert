@@ -22,37 +22,90 @@
             <div class="card-body">
                 <div class="row justify-content-center">
                     <div class="col-md-6">
+                        <!-- Banner Image -->
                         <div class="mb-3 image-preview d-flex flex-column">
                             <label for="banner-image" class="form-label">Banner Image <span class="text-danger">*</span></label>
-                            <img src="{{ isset($contact->banner_image) ? asset('storage/website/contact/' . $contact->banner_image) : '' }}" alt="" height="300" onclick="triggerFile()" class="object-fit-contain img-border mb-2 {{ isset($contact->banner_image) ? '' : 'd-none' }}">
+                            <img src="{{ isset($contact->banner_image) ? asset('storage/website/contact/' . $contact->banner_image) : '' }}" 
+                                 alt="Banner Image" 
+                                 height="300" 
+                                 onclick="triggerFile('banner')" 
+                                 class="object-fit-contain img-border mb-2 {{ isset($contact->banner_image) ? '' : 'd-none' }}" 
+                                 id="banner-preview">
                             <input type="file" name="banner_image" id="banner-image" accept="image/png, image/jpeg, image/jpg" hidden>
-                            <button type="button" class="btn btn-primary w-100" onclick="triggerFile()"><i class="ti ti-upload me-1"></i> Upload Image</button>
+                            <button type="button" class="btn btn-primary w-100" onclick="triggerFile('banner')">
+                                <i class="ti ti-upload me-1"></i> Upload Banner Image
+                            </button>
+                            @error('banner_image')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
+
+                        <!-- Section Image -->
+                        <div class="mb-3 image-preview d-flex flex-column">
+                            <label for="section-image" class="form-label">Section Image</label>
+                            <img src="{{ isset($contact->section_image) ? asset('storage/website/contact/' . $contact->section_image) : '' }}" 
+                                 alt="Section Image" 
+                                 height="300" 
+                                 onclick="triggerFile('section')" 
+                                 class="object-fit-contain img-border mb-2 {{ isset($contact->section_image) ? '' : 'd-none' }}" 
+                                 id="section-preview">
+                            <input type="file" name="section_image" id="section-image" accept="image/png, image/jpeg, image/jpg" hidden>
+                            <button type="button" class="btn btn-primary w-100" onclick="triggerFile('section')">
+                                <i class="ti ti-upload me-1"></i> Upload Section Image
+                            </button>
+                            @error('section_image')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Description -->
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
                             <input type="hidden" name="description" id="description">
-                            <div id="quill-description" style="height: auto">{!! old('description') ? old('description') : (isset($contact->description) ? $contact->description : '') !!}</div>
+                            <div id="quill-description" style="height: auto">
+                                {!! old('description') ? old('description') : (isset($contact->description) ? $contact->description : '') !!}
+                            </div>
+                            @error('description')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
+
+                        <!-- Address -->
                         <div class="mb-3">
                             <label for="address" class="form-label">Address</label>
                             <input type="hidden" name="address" id="address">
-                            <div id="quill-address" style="height: auto">{!! old('address') ? old('address') : (isset($contact->address) ? $contact->address : '') !!}</div>
+                            <div id="quill-address" style="height: auto">
+                                {!! old('address') ? old('address') : (isset($contact->address) ? $contact->address : '') !!}
+                            </div>
+                            @error('address')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
-                        {{-- <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea name="description" id="description" rows="5" class="form-control">{{ @old('description') ? @old('description') : (isset($contact->description) ? $contact->description : '') }}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <textarea name="address" id="address" rows="5" class="form-control">{{ @old('address') ? @old('address') : (isset($contact->address) ? $contact->address : '') }}</textarea>
-                        </div> --}}
+
+                        <!-- Phone Number -->
                         <div class="mb-3">
                             <label for="phone-number" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone-number" name="phone_number" value="{{ @old('phone_number') ? @old('phone_number') : (isset($contact->phone_number) ? $contact->phone_number : '') }}">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="phone-number" 
+                                   name="phone_number" 
+                                   value="{{ @old('phone_number') ? @old('phone_number') : (isset($contact->phone_number) ? $contact->phone_number : '') }}">
+                            @error('phone_number')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
+
+                        <!-- Email -->
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{ @old('email') ? @old('email') : (isset($contact->email) ? $contact->email : '') }}">
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   value="{{ @old('email') ? @old('email') : (isset($contact->email) ? $contact->email : '') }}">
+                            @error('email')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -83,37 +136,65 @@
     });
 </script>
 <script>
-    // Function to trigger file input
-    function triggerFile() {
-        $(`#banner-image`).trigger('click');
+    // File validation function
+    function validateFile(file) {
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please select a valid image file (PNG, JPEG, JPG)');
+            return false;
+        }
+
+        if (file.size > maxSize) {
+            alert('File size must be less than 10MB');
+            return false;
+        }
+
+        return true;
     }
 
-    // Handle image preview for both create and edit forms
+    // Function to trigger file input
+    function triggerFile(type) {
+        const inputId = type === 'banner' ? '#banner-image' : '#section-image';
+        $(inputId).trigger('click');
+    }
+
+    // Handle image preview for both images
     $(document).ready(function() {
-        // Handle file input change
-        $('.image-preview input[type="file"]').on('change', function(e) {
+        // Handle banner image preview
+        $('#banner-image').on('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            // Validate file
             if (!validateFile(file)) {
-                $(this).val(''); // Clear input if validation fails
+                $(this).val('');
                 return;
             }
 
-            // Find the closest image preview element
-            const previewImg = $(this).closest('.image-preview').find('img');
-            
-            // Create FileReader instance
             const reader = new FileReader();
-            
-            // Handle file load
             reader.onload = function(e) {
-                previewImg.attr('src', e.target.result);
-                previewImg.removeClass('d-none');
+                $('#banner-preview').attr('src', e.target.result);
+                $('#banner-preview').removeClass('d-none');
             };
-            
-            // Read file as data URL
+            reader.readAsDataURL(file);
+        });
+
+        // Handle section image preview
+        $('#section-image').on('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!validateFile(file)) {
+                $(this).val('');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#section-preview').attr('src', e.target.result);
+                $('#section-preview').removeClass('d-none');
+            };
             reader.readAsDataURL(file);
         });
     });

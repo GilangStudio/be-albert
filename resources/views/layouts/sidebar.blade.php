@@ -22,6 +22,23 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('banner.*') ? 'active' : '' }}" href="{{ route('banner.index') }}"><i class="ti ti-photo menu-icon"></i><span>Banner</span></a>
                     </li><!--end nav-item-->
+                    <!-- Menu Banner Collection/Bridal yang baru -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#banner-collection-sidebar" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="banner-collection-sidebar">
+                            <i class="ti ti-library-photo menu-icon"></i>
+                            <span>Banner Collection</span>
+                        </a>
+                        <div class="collapse {{ Route::is('collection-banner.*') ? 'show' : '' }}" id="banner-collection-sidebar">
+                            <ul class="nav flex-column">
+                                <li class="nav-item {{ Route::is('collection-banner.collection.*') ? 'active' : '' }}">
+                                    <a href="{{ route('collection-banner.collection.index') }}" class="nav-link">Banner Collection</a>
+                                </li><!--end nav-item-->
+                                <li class="nav-item {{ Route::is('collection-banner.bridal.*') ? 'active' : '' }}">
+                                    <a href="{{ route('collection-banner.bridal.index') }}" class="nav-link">Banner Bridal</a>
+                                </li><!--end nav-item-->
+                            </ul><!--end nav-->
+                        </div><!--end banner-collection-sidebar-->
+                    </li><!--end nav-item-->
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('collection.*') ? 'active' : '' }}" href="{{ route('collection.index') }}"><i class="ti ti-archive menu-icon"></i><span>Collection</span></a>
                     </li><!--end nav-item-->
