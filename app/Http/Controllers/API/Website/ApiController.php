@@ -27,7 +27,7 @@ class ApiController extends Controller
 
     public function get_home() {
         $banners = Banner::select('id', 'image', 'display_order')->orderBy('display_order', 'asc')->get();
-        $collections = Collection::select('id', 'name', 'slug', 'type', 'collection_year', 'main_image')->where('is_active', 1)->where('type', 'regular')->orderBy('collection_year', 'desc')->limit(3)->get();
+        $collections = Collection::select('id', 'name', 'description', 'slug', 'type', 'collection_year', 'main_image')->where('is_active', 1)->where('type', 'regular')->orderBy('collection_year', 'desc')->limit(3)->get();
         $presses = Press::select('id', 'title', 'published_on', 'published_date', 'link', 'image')->orderBy('published_date', 'desc')->limit(3)->get();
         $achievements = Achievement::select('id', 'name', 'image', 'display_order')->orderBy('display_order', 'asc')->limit(4)->get();
 
